@@ -1,33 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Week3_Day5.DataHandlingService;
 
 namespace Week3_Day5.Controllers
 {
     public class FormDataController : Controller
     {
-        string filePath = "data.txt";
+        private readonly IFormDataService _formDataService;
+
+        public FormDataController(IFormDataService formDataService)
+        {
+            _formDataService = formDataService;
+        }
         public IActionResult Index()
         {
-            List<string> formData = new List<string>();
-
-            if (System.IO.File.Exists(filePath))
-            {
-                formData = System.IO.File.ReadAllLines(filePath).ToList();
-            }
-            else
-            {
-                formData = new List<string>();
-            }
+            List<string> formData = _formDataService.Read();
             return View(formData);
         }
 
         [HttpPost]
         public IActionResult Index(string emailId, string message)
         {
-            if (string.IsNullOrWhiteSpace(emailId)==false && string.IsNullOrWhiteSpace(message)==false)
-            {
-                string newData = $"{emailId}: {message}";
-                System.IO.File.AppendAllText(filePath, newData + "\n");
-            }
+            _formDataService.Save(emailId, message);
             return RedirectToAction("Index");
         }
     }

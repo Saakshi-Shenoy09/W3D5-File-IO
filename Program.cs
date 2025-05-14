@@ -1,7 +1,11 @@
+using Week3_Day5.DataHandlingService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IFormDataService, FormDataService>();
 
 var app = builder.Build();
 
